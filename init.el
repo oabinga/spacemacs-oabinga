@@ -265,8 +265,7 @@ values."
 It is called immediately after `dotspacemacs/init'.  You are free to put almost
 any user code here.  The exception is org related code, which should be placed
 in `dotspacemacs/user-config'."
-  (setq-default dotspacemacs-enable-paste-micro-state t)
-  )
+  (setq-default dotspacemacs-enable-paste-micro-state t))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -284,6 +283,9 @@ layers configuration. You are free to put any user code."
   (add-hook 'text-mode-hook 'auto-fill-mode)
   (add-hook 'org-mode-hook 'auto-fill-mode)
   (remove-hook 'emacs-lisp-mode-hook 'auto-compile-mode)
+
+  (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
+  (spacemacs/set-leader-keys "od" 'find-by-pinyin-dired)
 
   (setq mode-line-misc-info
         ;; We remove Which Function Mode from the mode line, because it's mostly

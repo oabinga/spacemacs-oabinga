@@ -18,7 +18,7 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `my-c-c++'. Then, for each package PACKAGE:
+;; added to `my-c-c++-package'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
 ;;   function `my-c-c++/init-PACKAGE' to load and initialize the package.
@@ -29,7 +29,7 @@
 
 ;;; Code:
 
-(defconst my-c-c++
+(defconst my-c-c++-packages
   '(
     google-c-style
     )
@@ -61,7 +61,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun my-c-c++/init-my-c-c++ ()
+(defun my-c-c++/init-google-c-style ()
   (use-package google-c-style
     :config
     (add-hook 'c-mode-common-hook (lambda ()
