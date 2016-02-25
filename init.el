@@ -59,7 +59,13 @@ values."
              colors-enable-nyan-cat-progress-bar t)
      eyebrowse
      yaml
+     deft
+     command-log
+     elfeed
+     prodigy
      my-c-c++
+     my-help
+     my-org
      ;; prodigy  ;;Manage external services from within Emacs
      )
    ;; List of additional packages that will be installed without being
@@ -292,50 +298,42 @@ layers configuration. You are free to put any user code."
         ;; invisible here anyway.
         (assq-delete-all 'which-func-mode mode-line-misc-info))
 
-  (with-eval-after-load 'org
-    (progn
-      ;; define the refile targets
-      (setq org-agenda-files (quote ("~/org")))
-      (setq org-default-notes-file "~/org/gtd.org")
+  (setq deft-use-filter-string-for-filename t)
+  (spacemacs/set-leader-keys-for-major-mode 'deft-mode "q" 'quit-window)
+  (setq deft-directory "~/notes")
 
-      (with-eval-after-load 'org-agenda
-        (define-key org-agenda-mode-map (kbd "P") 'org-pomodoro))
-      (setq org-capture-templates
-            '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
-               "* TODO %?\n  %i\n"
-               :empty-lines 1)
-              ("n" "notes" entry (file+headline "~/org/notes.org" "Quick notes")
-               "* TODO [#C] %?\n  %i\n %U"
-               :empty-lines 1)
-              ("b" "Blog Ideas" entry (file+headline "~/org/notes.org" "Blog Ideas")
-               "* TODO %?\n  %i\n %U"
-               :empty-lines 1)
-              ("l" "links" entry (file+headline "~/org/notes.org" "Quick notes")
-               "* TODO %?\n  %i\n %a \n %U"
-               :empty-lines 1)
-              ("j" "Journal Entry"
-               entry (file+datetree "~/org/journal.org")
-               "* %?"
-               :empty-lines 1)
-              ("f" "Financial"
-               entry (file+datetree "~/org/financial.org")
-               "* %?"
-               :empty-lines 1
-               )))
+  (setq elfeed-feeds
+        '("http://nullprogram.com/feed/"
+          "http://z.caudate.me/rss/"
+          "http://irreal.org/blog/?feed=rss2"
+          "http://feeds.feedburner.com/LostInTheTriangles"
+          "http://tonybai.com/feed/"
+          "http://planet.emacsen.org/atom.xml"
+          "http://feeds.feedburner.com/emacsblog"
+          "http://blog.binchen.org/rss.xml"
+          "http://oremacs.com/atom.xml"
+          "http://blog.gemserk.com/feed/"
+          "http://www.masteringemacs.org/feed/"
+          "http://t-machine.org/index.php/feed/"
+          "http://gameenginebook.blogspot.com/feeds/posts/default"
+          "http://feeds.feedburner.com/ruanyifeng"
+          "http://coolshell.cn/feed"
+          "http://blog.devtang.com/atom.xml"
+          "http://emacsist.com/rss"
+          "http://puntoblogspot.blogspot.com/feeds/2507074905876002529/comments/default"
+          "http://angelic-sedition.github.io/atom.xml"))
 
-      ;;An entry without a cookie is treated just like priority ' B '.
-      ;;So when create new task, they are default 重要且紧急
-      (setq org-agenda-custom-commands
-            '(
-              ("w" . "任务安排")
-              ("wa" "重要且紧急的任务" tags-todo "+PRIORITY=\"A\"")
-              ("wb" "重要且不紧急的任务" tags-todo "-Weekly-Monthly-Daily+PRIORITY=\"B\"")
-              ("wc" "不重要且紧急的任务" tags-todo "+PRIORITY=\"C\"")
-              ("b" "Blog" tags-todo "BLOG")
-              ("W" "Weekly Review"
-               ((stuck "")            ;; review stuck projects as designated by org-stuck-projects
-                (tags-todo "PROJECT") ;; review all projects (assuming you use todo keywords to designate projects)
-                ))))))
+  (setq company-c-headers-path-system
+        (quote
+         ("/usr/include/"
+          "/usr/local/include/"
+          "D:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\include"
+          "D:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\atlmfc\\include")))
+  (setq company-c-headers-path-user
+        (quote
+         ("C:\\Boost\\include\\boost-1_59"
+          ".")))
+
 
   )
 
@@ -353,7 +351,7 @@ layers configuration. You are free to put any user code."
      ("gnu" . "http://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (yaml-mode eyebrowse rainbow-mode rainbow-identifiers engine-mode prodigy solarized-theme ranger youdao-dictionary google-c-style ycmd flycheck-ycmd company-ycmd pandoc-mode ox-pandoc geeknote zonokai-theme zenburn-theme zen-and-art-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme pastels-on-dark-theme organic-green-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme niflheim-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme firebelly-theme farmhouse-theme espresso-theme django-theme darktooth-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme colorsarenice-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme stickyfunc-enhance srefactor pangu-spacing helm-gtags ggtags find-by-pinyin-dired disaster company-c-headers cmake-mode clang-format chinese-pyim ace-pinyin xterm-color toml-mode toc-org smeargle shell-pop racer orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore helm-flyspell helm-company helm-c-yasnippet go-eldoc gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe git-gutter+ git-gutter gh-md flycheck-rust flycheck-pos-tip flycheck evil-magit eshell-prompt-extras esh-help diff-hl company-statistics company-racer company-quickhelp company-go company auto-yasnippet auto-dictionary ac-ispell ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe use-package spacemacs-theme spaceline smooth-scrolling restart-emacs rainbow-delimiters quelpa popwin popup persp-mode pcre2el paradox page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-jumper evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu elisp-slime-nav define-word clean-aindent-mode buffer-move auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+    (discover-my-major elfeed-web elfeed-org elfeed-goodies elfeed command-log-mode deft yaml-mode eyebrowse rainbow-mode rainbow-identifiers engine-mode prodigy solarized-theme ranger youdao-dictionary google-c-style ycmd flycheck-ycmd company-ycmd pandoc-mode ox-pandoc geeknote zonokai-theme zenburn-theme zen-and-art-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme pastels-on-dark-theme organic-green-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme niflheim-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme firebelly-theme farmhouse-theme espresso-theme django-theme darktooth-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme colorsarenice-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme stickyfunc-enhance srefactor pangu-spacing helm-gtags ggtags find-by-pinyin-dired disaster company-c-headers cmake-mode clang-format chinese-pyim ace-pinyin xterm-color toml-mode toc-org smeargle shell-pop racer orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore helm-flyspell helm-company helm-c-yasnippet go-eldoc gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe git-gutter+ git-gutter gh-md flycheck-rust flycheck-pos-tip flycheck evil-magit eshell-prompt-extras esh-help diff-hl company-statistics company-racer company-quickhelp company-go company auto-yasnippet auto-dictionary ac-ispell ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe use-package spacemacs-theme spaceline smooth-scrolling restart-emacs rainbow-delimiters quelpa popwin popup persp-mode pcre2el paradox page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-jumper evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu elisp-slime-nav define-word clean-aindent-mode buffer-move auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
