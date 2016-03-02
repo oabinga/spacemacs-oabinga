@@ -1,4 +1,4 @@
-;;; packages.el --- my-org layer packages file for Spacemacs.
+﻿;;; packages.el --- my-org layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -66,32 +66,26 @@ Each entry is either:
     (progn
       ;; define the refile targets
       (setq org-agenda-files (quote ("~/org")))
-      (setq org-default-notes-file "~/org/gtd.org")
+      (setq org-default-notes-file "~/org/inbox.org")
 
       (with-eval-after-load 'org-agenda
         (define-key org-agenda-mode-map (kbd "P") 'org-pomodoro))
       (setq org-capture-templates
-            '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
+            '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Inbox")
                "* TODO %?\n  %i\n"
                :empty-lines 1)
-              ("n" "notes" entry (file+headline "~/org/notes.org" "Quick notes")
-               "* TODO [#C] %?\n  %i\n %U"
+              ("n" "Notes" entry (file+headline "~/org/notes.org" "Quick Notes")
+               "* %?\n  %i\n%U"
                :empty-lines 1)
-              ("b" "Blog Ideas" entry (file+headline "~/org/notes.org" "Blog Ideas")
-               "* TODO %?\n  %i\n %U"
+              ("l" "Links" entry (file+headline "~/org/notes.org" "Quick Notes")
+               "* %?\n  %i\n %a \n%U"
                :empty-lines 1)
-              ("l" "links" entry (file+headline "~/org/notes.org" "Quick notes")
-               "* TODO %?\n  %i\n %a \n %U"
+              ("j" "Journal" entry (file+datetree "~/org/journal.org")
+               "* %?\n%U\n"
                :empty-lines 1)
-              ("j" "Journal Entry"
-               entry (file+datetree "~/org/journal.org")
-               "* %?"
-               :empty-lines 1)
-              ("f" "Financial"
-               entry (file+datetree "~/org/financial.org")
-               "* %?"
-               :empty-lines 1
-               )))
+              ("f" "Financial" entry (file+headline "~/org/financial.org" "Financial")
+               "* %T %?\n"
+               :empty-lines 1)))
 
       ;;An entry without a cookie is treated just like priority ' B '.
       ;;So when create new task, they are default 重要且紧急
@@ -105,65 +99,103 @@ Each entry is either:
               ("W" "Weekly Review"
                ((stuck "")            ;; review stuck projects as designated by org-stuck-projects
                 (tags-todo "PROJECT") ;; review all projects (assuming you use todo keywords to designate projects)
+                ))))
       (defun org-summary-todo (n-done n-not-done)
         "Switch entry to DONE when all subentries are done, to TODO otherwise."
         (let (org-log-done org-log-states)  ; turn off logging
           (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-
       (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-      ;; used by org-clock-sum-today-by-tags
-      (defun filter-by-tags ()
-        (let ((head-tags (org-get-tags-at)))
-          (member current-tag head-tags)))
 
-      (defun org-clock-sum-today-by-tags (timerange &optional tstart tend noinsert)
-        (interactive "P")
-        (let* ((timerange-numeric-value (prefix-numeric-value timerange))
-               (files (org-add-archive-files (org-agenda-files)))
-               (include-tags '("WORK" "EMACS" "DREAM" "WRITING" "MEETING"
-                               "LIFE" "PROJECT" "OTHER"))
-               (tags-time-alist (mapcar (lambda (tag) `(,tag . 0)) include-tags))
-               (output-string "")
-               (tstart (or tstart
-                           (and timerange (equal timerange-numeric-value 4) (- (org-time-today) 86400))
-                           (and timerange (equal timerange-numeric-value 16) (org-read-date nil nil nil "Start Date/Time:"))
-                           (org-time-today)))
-               (tend (or tend
-                         (and timerange (equal timerange-numeric-value 16) (org-read-date nil nil nil "End Date/Time:"))
-                         (+ tstart 86400)))
-               h m file item prompt donesomething)
-          (while (setq file (pop files))
-            (setq org-agenda-buffer (if (file-exists-p file)
-                                        (org-get-agenda-file-buffer file)
-                                      (error "No such file %s" file)))
-            (with-current-buffer org-agenda-buffer
-              (dolist (current-tag include-tags)
-                (org-clock-sum tstart tend 'filter-by-tags)
-                (setcdr (assoc current-tag tags-time-alist)
-                        (+ org-clock-file-total-minutes (cdr (assoc current-tag tags-time-alist)))))))
-          (while (setq item (pop tags-time-alist))
-            (unless (equal (cdr item) 0)
-              (setq donesomething t)
-              (setq h (/ (cdr item) 60)
-                    m (- (cdr item) (* 60 h)))
-              (setq output-string (concat output-string (format "[-%s-] %.2d:%.2d\n" (car item) h m)))))
-          (unless donesomething
-            (setq output-string (concat output-string "[-Nothing-] Done nothing!!!\n")))
-          (unless noinsert
-            (insert output-string))
-          output-string))
-      )))))
-    (setq org-todo-keywords
-          (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
-                  (sequence "WAITING(w@/!)" "SOMEDAY(S)"  "|" "CANCELLED(c@/!)" "MEETING(m)" "PHONE(p)"))))
+      (setq org-tag-alist (quote ((:startgroup)
+                                  ("@OFFICE" . ?o)
+                                  ("@HOME" . ?h)
+                                  ("@WAY" . ?w)
+                                  (:endgroup)
+                                  ("COMPUTER" . ?c)
+                                  ("READING" . ?r)
+                                  ("PROJECT" . ?p)
+                                  ("ENGLISH" . ?e)
+                                  ("STUDY" . ?s)
+                                  ("MEMO" . ?m)
+                                  ("WAITING" . ?W)
+                                  ("SOMEDAY" . ?H)
+                                  ("CANCELLED" . ?C))))
+      ;; The tags are used to filter tasks in the agenda views conveniently
+      (setq org-todo-state-tags-triggers
+            (quote (("CANCELLED" ("CANCELLED" . t))                   ;; Moving a task to CANCELLED adds a CANCELLED tag
+                    ("WAITING" ("WAITING" . t))                       ;; Moving a task to WAITING adds a WAITING tag
+                    ("SOMEDAY" ("WAITING") ("SOMEDAY" . t))                 ;; Moving a task to SOMEDAY adds WAITING and SOMEDAY tags
+                    ("DONE" ("WAITING") ("SOMEDAY"))                     ;; Moving a task to a done state removes WAITING and SOMEDAY tags
+                    ("TODO" ("WAITING") ("CANCELLED") ("SOMEDAY"))       ;; Moving a task to TODO removes WAITING, CANCELLED, and SOMEDAY tags
+                    ("NEXT" ("WAITING") ("CANCELLED") ("SOMEDAY"))       ;; Moving a task to NEXT removes WAITING, CANCELLED, and SOMEDAY tags
+                    ("DONE" ("WAITING") ("CANCELLED") ("SOMEDAY")))))    ;; Moving a task to DONE removes WAITING, CANCELLED, and SOMEDAY tags
 
-    (define-key global-map (kbd "C-c C-x t") 'org-clock-sum-today-by-tags)
+      (setq org-todo-keywords
+            (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                    (sequence "WAITING(w@/!)" "SOMEDAY(s@/!)" "|" "CANCELLED(c@/!)"))))
 
-    ;; Change task state to STARTED when clocking in
-    (setq org-clock-in-switch-to-state "STARTED")
-    ;; Save clock data and notes in the LOGBOOK drawer
-    (setq org-clock-into-drawer t)
-    ;; Removes clocked tasks with 0:00 duration
-    (setq org-clock-out-remove-zero-time-clocks t) ;; Show the clocked-in task - if any - in the header line
-    ))
+      (setq org-todo-keyword-faces
+            (quote (("TODO" :foreground "#f44" :weight bold)
+                    ("NEXT" :foreground "#19ADE6" :weight bold)
+                    ("DONE" :foreground "forest green" :weight normal :strike-through t)
+                    ("WAITING" :foreground "orange" :weight bold)
+                    ("SOMEDAY" :foreground "magenta" :weight bold)
+                    ("CANCELLED" :foreground "forest green" :weight bold)
+                    )))
+      ;; Agenda clock report parameters
+      (setq org-agenda-clockreport-parameter-plist
+            (quote (:link t :maxlevel 5 :fileskip0 t :compact t :narrow 80)))
+
+      ;; global Effort estimate values
+      ;; global STYLE property values for completion
+      (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
+                                          ("STYLE_ALL" . "habit"))))
+
+      ;; Set default column view headings: Task Effort Clock_Summary
+      (setq org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+
+      ;; Agenda log mode items to display (closed and state changes by default)
+      (setq org-agenda-log-mode-items (quote (closed state)))
+      ;; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+      (setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                       (org-agenda-files :maxlevel . 9))))
+      ;; Use full outline paths for refile targets - we file directly with IDO
+      (setq org-refile-use-outline-path t)
+
+      ;; Targets complete directly with IDO
+      (setq org-outline-path-complete-in-steps nil)
+
+      ;; Allow refile to create parent tasks with confirmation
+      (setq org-refile-allow-creating-parent-nodes (quote confirm))
+
+      ;; Use IDO for both buffer and file completion and ido-everywhere to t
+      (setq org-completion-use-ido t)
+      (setq ido-everywhere t)
+      (setq ido-max-directory-size 100000)
+      (ido-mode (quote both))
+      ;; Use the current window when visiting files and buffers with ido
+      (setq ido-default-file-method 'selected-window)
+      (setq ido-default-buffer-method 'selected-window)
+      ;; Use the current window for indirect buffer display
+      (setq org-indirect-buffer-display 'current-window)
+
+      ;; Refile settings
+      ;; Exclude DONE state tasks from refile targets
+      (defun bh/verify-refile-target ()
+        "Exclude todo keywords with a done state from refile targets"
+        (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+
+      (setq org-refile-target-verify-function 'bh/verify-refile-target)
+
+      ;; (setq org-todo-keywords
+      ;;       (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
+      ;;               (sequence "WAITING(w@/!)" "SOMEDAY(S)"  "|" "CANCELLED(c@/!)" "MEETING(m)" "PHONE(p)"))))
+
+      ;; ;; Change task state to STARTED when clocking in
+      ;; (setq org-clock-in-switch-to-state "STARTED")
+      ;; Save clock data and notes in the LOGBOOK drawer
+      (setq org-clock-into-drawer t)
+      ;; Removes clocked tasks with 0:00 duration
+      (setq org-clock-out-remove-zero-time-clocks t) ;; Show the clocked-in task - if any - in the header line
+      )))
 ;;; packages.el ends here
