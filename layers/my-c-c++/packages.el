@@ -32,6 +32,7 @@
 (defconst my-c-c++-packages
   '(
     google-c-style
+    (cdb-gud :location local)
     )
 
   "The list of Lisp packages required by the my-c-c++ layer.
@@ -66,12 +67,14 @@ Each entry is either:
     :config
     (add-hook 'c-mode-common-hook (lambda ()
                                     (google-set-c-style)
-                                    (setq c-basic-offset 4)))
+                                    (setq c-basic-offset 2)))
     (add-hook 'c-mode-common-hook 'google-make-newline-indent)))
+
+(defun my-c-c++/init-cdb-gud ()
+  (use-package cdb-gud))
 
 (defun guanghui/post-init-cc-mode ()
   (progn
-
     ;; http://stackoverflow.com/questions/23553881/emacs-indenting-of-c11-lambda-functions-cc-mode
     (defadvice c-lineup-arglist (around my activate)
       "Improve indentation of continued C++11 lambda function opened as argument."

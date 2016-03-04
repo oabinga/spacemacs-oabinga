@@ -77,8 +77,8 @@ Each entry is either:
               ("n" "Notes" entry (file+headline "~/org/notes.org" "Quick Notes")
                "* %?\n  %i\n%U"
                :empty-lines 1)
-              ("l" "Links" entry (file+headline "~/org/notes.org" "Quick Notes")
-               "* %?\n  %i\n %a \n%U"
+              ("l" "Links" entry (file+headline "~/org/notes.org" "Links")
+               "* %?\n %A\n %i\n%U"
                :empty-lines 1)
               ("j" "Journal" entry (file+datetree "~/org/journal.org")
                "* %?\n%U\n"
@@ -127,16 +127,16 @@ Each entry is either:
                     ("SOMEDAY" ("WAITING") ("SOMEDAY" . t))                 ;; Moving a task to SOMEDAY adds WAITING and SOMEDAY tags
                     ("DONE" ("WAITING") ("SOMEDAY"))                     ;; Moving a task to a done state removes WAITING and SOMEDAY tags
                     ("TODO" ("WAITING") ("CANCELLED") ("SOMEDAY"))       ;; Moving a task to TODO removes WAITING, CANCELLED, and SOMEDAY tags
-                    ("NEXT" ("WAITING") ("CANCELLED") ("SOMEDAY"))       ;; Moving a task to NEXT removes WAITING, CANCELLED, and SOMEDAY tags
+                    ("STARTED" ("WAITING") ("CANCELLED") ("SOMEDAY"))       ;; Moving a task to STARTED removes WAITING, CANCELLED, and SOMEDAY tags
                     ("DONE" ("WAITING") ("CANCELLED") ("SOMEDAY")))))    ;; Moving a task to DONE removes WAITING, CANCELLED, and SOMEDAY tags
 
       (setq org-todo-keywords
-            (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                    (sequence "WAITING(w@/!)" "SOMEDAY(s@/!)" "|" "CANCELLED(c@/!)"))))
+            (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)")
+                    (sequence "WAITING(w@/!)" "SOMEDAY(S@/!)" "|" "CANCELLED(c@/!)"))))
 
       (setq org-todo-keyword-faces
             (quote (("TODO" :foreground "#f44" :weight bold)
-                    ("NEXT" :foreground "#19ADE6" :weight bold)
+                    ("STARTED" :foreground "#19ADE6" :weight bold)
                     ("DONE" :foreground "forest green" :weight normal :strike-through t)
                     ("WAITING" :foreground "orange" :weight bold)
                     ("SOMEDAY" :foreground "magenta" :weight bold)
@@ -191,8 +191,8 @@ Each entry is either:
       ;;       (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
       ;;               (sequence "WAITING(w@/!)" "SOMEDAY(S)"  "|" "CANCELLED(c@/!)" "MEETING(m)" "PHONE(p)"))))
 
-      ;; ;; Change task state to STARTED when clocking in
-      ;; (setq org-clock-in-switch-to-state "STARTED")
+      ;; Change task state to STARTED when clocking in
+      (setq org-clock-in-switch-to-state "STARTED")
       ;; Save clock data and notes in the LOGBOOK drawer
       (setq org-clock-into-drawer t)
       ;; Removes clocked tasks with 0:00 duration
