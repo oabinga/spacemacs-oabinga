@@ -49,7 +49,7 @@ values."
      themes-megapack
      evernote
      pandoc
-     ycmd
+     ;; ycmd
      ranger
      search-engine
      (spacemacs-layouts :variables
@@ -281,8 +281,8 @@ This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   (when (spacemacs/system-is-mswindows)
     (progn
-      (set-variable 'ycmd-server-command '("python" "-u" "d:/tools/ycmd/ycmd/ycmd"))
-      (set-variable 'ycmd-global-config "d:/tools/ycmd/global_config.py")
+      ;; (set-variable 'ycmd-server-command '("python" "-u" "d:/tools/ycmd/ycmd/ycmd"))
+      ;; (set-variable 'ycmd-global-config "d:/tools/ycmd/global_config.py")
       (set-variable 'ispell-program-name "D:/Program Files (x86)/Aspell/bin/aspell.exe")
       (setq browse-url-browser-function 'browse-url-generic
             engine/browser-function 'browse-url-generic
@@ -304,37 +304,37 @@ layers configuration. You are free to put any user code."
   (spacemacs/set-leader-keys-for-major-mode 'deft-mode "q" 'quit-window)
   (setq deft-directory "~/notes")
 
-  (setq elfeed-feeds
-        '("http://nullprogram.com/feed/"
-          "http://z.caudate.me/rss/"
-          "http://irreal.org/blog/?feed=rss2"
-          "http://feeds.feedburner.com/LostInTheTriangles"
-          "http://tonybai.com/feed/"
-          "http://planet.emacsen.org/atom.xml"
-          "http://feeds.feedburner.com/emacsblog"
-          "http://blog.binchen.org/rss.xml"
-          "http://oremacs.com/atom.xml"
-          "http://blog.gemserk.com/feed/"
-          "http://www.masteringemacs.org/feed/"
-          "http://t-machine.org/index.php/feed/"
-          "http://gameenginebook.blogspot.com/feeds/posts/default"
-          "http://feeds.feedburner.com/ruanyifeng"
-          "http://coolshell.cn/feed"
-          "http://blog.devtang.com/atom.xml"
-          "http://emacsist.com/rss"
-          "http://puntoblogspot.blogspot.com/feeds/2507074905876002529/comments/default"
-          "http://angelic-sedition.github.io/atom.xml"))
+  ;; (setq elfeed-feeds
+  ;;       '("http://nullprogram.com/feed/"
+  ;;         "http://z.caudate.me/rss/"
+  ;;         "http://irreal.org/blog/?feed=rss2"
+  ;;         "http://feeds.feedburner.com/LostInTheTriangles"
+  ;;         "http://tonybai.com/feed/"
+  ;;         "http://planet.emacsen.org/atom.xml"
+  ;;         "http://feeds.feedburner.com/emacsblog"
+  ;;         "http://blog.binchen.org/rss.xml"
+  ;;         "http://oremacs.com/atom.xml"
+  ;;         "http://blog.gemserk.com/feed/"
+  ;;         "http://www.masteringemacs.org/feed/"
+  ;;         "http://t-machine.org/index.php/feed/"
+  ;;         "http://gameenginebook.blogspot.com/feeds/posts/default"
+  ;;         "http://feeds.feedburner.com/ruanyifeng"
+  ;;         "http://coolshell.cn/feed"
+  ;;         "http://blog.devtang.com/atom.xml"
+  ;;         "http://emacsist.com/rss"
+  ;;         "http://puntoblogspot.blogspot.com/feeds/2507074905876002529/comments/default"
+  ;;         "http://angelic-sedition.github.io/atom.xml"))
 
-  (setq company-c-headers-path-system
-        (quote
-         ("/usr/include/"
-          "/usr/local/include/"
-          "D:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\include"
-          "D:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\atlmfc\\include")))
-  (setq company-c-headers-path-user
-        (quote
-         ("C:\\Boost\\include\\boost-1_59"
-          ".")))
+  ;; (setq company-c-headers-path-system
+  ;;       (quote
+  ;;        ("/usr/include/"
+  ;;         "/usr/local/include/"
+  ;;         "D:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\include"
+  ;;         "D:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\atlmfc\\include")))
+  ;; (setq company-c-headers-path-user
+  ;;       (quote
+  ;;        ("C:\\Boost\\include\\boost-1_59"
+  ;;         ".")))
   )
 
 (custom-set-variables

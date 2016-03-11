@@ -64,6 +64,8 @@ Each entry is either:
 (defun my-org/post-init-org ()
   (with-eval-after-load 'org
     (progn
+      (setq org-bullets-bullet-list '("◉" "○" "▲" "▶"))
+
       ;; define the refile targets
       (setq org-agenda-files (quote ("~/org")))
       (setq org-default-notes-file "~/org/inbox.org")

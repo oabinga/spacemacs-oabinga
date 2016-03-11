@@ -67,7 +67,7 @@ Each entry is either:
     :config
     (add-hook 'c-mode-common-hook (lambda ()
                                     (google-set-c-style)
-                                    (setq c-basic-offset 2)))
+                                    (setq c-basic-offset 4)))
     (add-hook 'c-mode-common-hook 'google-make-newline-indent)))
 
 (defun my-c-c++/init-cdb-gud ()
