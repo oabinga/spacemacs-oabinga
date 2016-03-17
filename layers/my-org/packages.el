@@ -32,6 +32,10 @@
 (defconst my-org-packages
   '(
     org
+    ;; org-octopress
+    (blog-admin :location (recipe
+                           :fetcher github
+                           :repo "Codefalling/blog-admin"))
     )
   "The list of Lisp packages required by the my-org layer.
 
@@ -119,6 +123,8 @@ Each entry is either:
                                   ("ENGLISH" . ?e)
                                   ("STUDY" . ?s)
                                   ("MEMO" . ?m)
+                                  ("BLOG", ?b)
+                                  ("EMACS", ?E)
                                   ("WAITING" . ?W)
                                   ("SOMEDAY" . ?H)
                                   ("CANCELLED" . ?C))))
@@ -199,5 +205,18 @@ Each entry is either:
       (setq org-clock-into-drawer t)
       ;; Removes clocked tasks with 0:00 duration
       (setq org-clock-out-remove-zero-time-clocks t) ;; Show the clocked-in task - if any - in the header line
-      )))
+      )
+
+    (advice-add 'org-pomodoro-play-sound :before #'my-org/org-pomodoro-play-sound-async)
+    ))
+
+(defun my-org/init-blog-admin ()
+  (use-package blog-admin
+    :init
+    (progn
+    (setq blog-admin-backend-path "~/blog")
+    (setq blog-admin-backend-type 'hexo)
+    (setq blog-admin-backend-new-post-in-drafts t) ;; create new post in drafts by default
+    (setq blog-admin-backend-new-post-with-same-name-dir t) ;; create same-name directory with new post
+    )))
 ;;; packages.el ends here
