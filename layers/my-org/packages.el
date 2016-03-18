@@ -205,6 +205,7 @@ Each entry is either:
       (setq org-clock-into-drawer t)
       ;; Removes clocked tasks with 0:00 duration
       (setq org-clock-out-remove-zero-time-clocks t) ;; Show the clocked-in task - if any - in the header line
+      (setq org-src-fontify-natively t)     ;; hightling when edit source
       )
 
     (advice-add 'org-pomodoro-play-sound :before #'my-org/org-pomodoro-play-sound-async)
