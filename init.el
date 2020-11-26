@@ -47,7 +47,7 @@ values."
      semantic
      gtags
      themes-megapack
-     evernote
+     ;; evernote
      pandoc
      ;; ycmd
      ranger
